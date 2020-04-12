@@ -1,6 +1,8 @@
 # Christmas Rogue
 
-Probably the most over-the-top Christmas present I will ever produce.
+Probably the most over-the-top Christmas present I will ever produce,
+a simple [roguelike](https://en.wikipedia.org/wiki/Roguelike) game
+inspired by [Brogue](https://sites.google.com/site/broguegame/).
 Created in December 2014 for my father.
 
 ![](screenshot.png)
