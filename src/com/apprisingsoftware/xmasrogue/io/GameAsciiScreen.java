@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Random;
 
 public final class GameAsciiScreen extends CascadedAsciiScreen implements NestedInputAcceptingAsciiScreen {
-	
+
 	private enum State {
 		GAMEPLAY,
 		PLAYER_HAS_DIED,
@@ -31,31 +31,31 @@ public final class GameAsciiScreen extends CascadedAsciiScreen implements Nested
 		EQUIPPING_ITEM,
 		REMOVING_ITEM,
 	}
-	
+
 	private List<MapTile[][]> dungeon;
 	private Entity player;
 	private Inventory inventory;
 	private final int originalSeed;
 	private Random gameRandom;
 	private int currentLevel;
-	
+
 	private MapScreen mapScreen;
 	private MessageScreen messageScreen;
 	private ProgressBarScreen healthBar;
 	private ProgressBarScreen satiationBar;
 	private LabelScreen locationLabel;
 	private LabelScreen levelLabel;
-	
+
 	private final Rect mapScreenRect;
 	private Deque<List<Message>> overflowMessages;
 	private State currentState;
-	
+
 	private static final int leftColumnWidth = 16;
-	
+
 	private GameAsciiScreen(int width, int height, int originalSeed, @SuppressWarnings("unused") Object dummy) {
 		super(width, height);
 		if (width <= 0 || height <= 0) throw new IllegalArgumentException();
-		
+
 		this.mapScreenRect = new Rect(leftColumnWidth, 3, width - leftColumnWidth, height - 4);
 		this.originalSeed = originalSeed;
 		currentState = State.GAMEPLAY;
@@ -102,10 +102,10 @@ public final class GameAsciiScreen extends CascadedAsciiScreen implements Nested
 			}
 		if (this.currentLevel == -1 || this.player == null) throw new AssertionError();
 		setMapScreen(new MapScreen(new MapLoader(this.dungeon.get(this.currentLevel))));
-		
+
 		createHUD();
 	}
-	
+
 	private void setMapScreen(MapScreen screen) {
 		this.mapScreen = screen;
 		if (depth() == 0) {
@@ -121,7 +121,7 @@ public final class GameAsciiScreen extends CascadedAsciiScreen implements Nested
 		Rect satiationBarRect = new Rect(0, 1, leftColumnWidth, 1);
 		Rect locationTextRect = new Rect(leftColumnWidth + 1, height - 1, width - leftColumnWidth - 1, 1);
 		Rect levelLabelRect = new Rect(0, height - 1, leftColumnWidth, 1);
-		
+
 		this.messageScreen = new MessageScreen(messageLogRect.getWidth(), messageLogRect.getHeight(), AsciiPanel.black);
 		this.healthBar = new ProgressBarScreen(healthBarRect.getWidth(), AsciiPanel.blue, AsciiPanel.black, () -> player.getHPFraction(), "Health", AsciiPanel.white);
 		this.satiationBar = new ProgressBarScreen(satiationBarRect.getWidth(), AsciiPanel.green, AsciiPanel.black, () -> player.getSatiationFraction(), "Hunger", AsciiPanel.white);
@@ -139,7 +139,7 @@ public final class GameAsciiScreen extends CascadedAsciiScreen implements Nested
 		updateLevelLabel();
 		mapScreen.updateLightMap(currentLevel, gameRandom, inventory);
 	}
-	
+
 	@Override public NestedInputAcceptingAsciiScreen respondToInput(KeyEvent e) {
 		// You can quit from anywhere.
 		if (e.getKeyCode() == KeyEvent.VK_Q && e.isShiftDown()) {
@@ -163,37 +163,45 @@ public final class GameAsciiScreen extends CascadedAsciiScreen implements Nested
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_4:
+                        case KeyEvent.VK_NUMPAD4:
 			case KeyEvent.VK_H:
 				playerResult = mapScreen.tryMovePlayer(Dir.LEFT, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_6:
+                        case KeyEvent.VK_NUMPAD6:
 			case KeyEvent.VK_L:
 				playerResult = mapScreen.tryMovePlayer(Dir.RIGHT, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_UP:
 			case KeyEvent.VK_8:
+			case KeyEvent.VK_NUMPAD8:
 			case KeyEvent.VK_K:
 				playerResult = mapScreen.tryMovePlayer(Dir.UP, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_DOWN:
 			case KeyEvent.VK_2:
+			case KeyEvent.VK_NUMPAD2:
 			case KeyEvent.VK_J:
 				playerResult = mapScreen.tryMovePlayer(Dir.DOWN, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_7:
+			case KeyEvent.VK_NUMPAD7:
 			case KeyEvent.VK_Y:
 				playerResult = mapScreen.tryMovePlayer(Dir.UPLEFT, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_9:
+			case KeyEvent.VK_NUMPAD9:
 			case KeyEvent.VK_U:
 				playerResult = mapScreen.tryMovePlayer(Dir.UPRIGHT, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_1:
+			case KeyEvent.VK_NUMPAD1:
 			case KeyEvent.VK_B:
 				playerResult = mapScreen.tryMovePlayer(Dir.DOWNLEFT, gameRandom, inventory);
 				break;
 			case KeyEvent.VK_3:
+			case KeyEvent.VK_NUMPAD3:
 			case KeyEvent.VK_N:
 				playerResult = mapScreen.tryMovePlayer(Dir.DOWNRIGHT, gameRandom, inventory);
 				break;
@@ -410,5 +418,5 @@ public final class GameAsciiScreen extends CascadedAsciiScreen implements Nested
 	private void hideInventory() {
 		removeTopScreen();
 	}
-	
+
 }
